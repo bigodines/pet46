@@ -6,8 +6,13 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-def get_git_blame(file_path):
-    command = ['git', 'blame', '--line-porcelain', file_path]
+def get_git_blame(file_path, lines=[]):
+    if len(lines) > 0:
+        line_args = f'-L {lines[0]},{lines[1]}'
+        command = ['git', 'blame', '--line-porcelain', *line_args, file_path]
+    else:
+        command = ['git', 'blame', '--line-porcelain', file_path]
+
     result = subprocess.run(command, capture_output=True, text=True)
     return result.stdout.split('\n')
 
@@ -24,8 +29,8 @@ def parse_git_blame(blame_output):
             current_line[key] = value
     return lines
 
-def analyze_file(file_path, age_threshold=None):
-    blame_output = get_git_blame(file_path)
+def analyze_file(file_path, age_threshold=None, lines=[]):
+    blame_output = get_git_blame(file_path, lines)
     parsed_blame = parse_git_blame(blame_output)
     
     analysis = defaultdict(lambda: {'lines': 0, 'last_modified': None})
@@ -55,7 +60,9 @@ def api_analyze():
     data = request.json
     file_path = data['file_path']
     age_threshold = data.get('age_threshold')
-    analysis, old_lines = analyze_file(file_path, age_threshold)
+    lines = data.get('lines', [])
+
+    analysis, old_lines = analyze_file(file_path, age_threshold, lines)
     return jsonify({'analysis': analysis, 'old_lines': old_lines})
 
 if __name__ == '__main__':
@@ -63,6 +70,7 @@ if __name__ == '__main__':
     parser.add_argument('--file', type=str, help='File to analyze')
     parser.add_argument('--age', type=int, help='Age threshold in years')
     parser.add_argument('--api', action='store_true', help='Run as API server')
+    parser.add_argument('--lines', type=int, nargs=2, help='Lines to analyze')
     args = parser.parse_args()
 
     if args.api:
