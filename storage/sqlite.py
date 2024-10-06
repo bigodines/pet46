@@ -31,7 +31,7 @@ class SQLiteStorage(Storage):
         return None
     
     def add_check_in(self, check_in: CheckIn):
-        self.cursor.execute("INSERT INTO check_in (user_id, timestamp, date)")
+        self.cursor.execute("INSERT INTO check_in (user_id, timestamp, date, payload) VALUES (?, ?, ?, ?)")
         self.conn.commit()
 
     def close(self):
