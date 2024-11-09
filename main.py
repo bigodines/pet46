@@ -84,6 +84,9 @@ def api_analyze():
     analysis, old_lines = analyze_file(file_path, age_threshold, lines)
     return jsonify({'analysis': analysis, 'old_lines': old_lines})
 
+'''
+CLI options for the code review co-pilot
+'''
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Analyze Git file history')
     parser.add_argument('--file', type=str, help='File to analyze')
