@@ -2,18 +2,7 @@ import subprocess
 import argparse
 from collections import defaultdict
 from datetime import datetime, timedelta
-from flask import Flask, request, jsonify
-from storage.sqlite import SQLiteStorage
-import json
 
-app = Flask(__name__)
-
-def load_config():
-    try:
-        with open('config.json', 'r') as config:
-            return json.load(config)
-    except:
-        print('Cannot load config file ./config.json')
 
 
 def get_git_blame(file_path, lines=[]):
@@ -66,25 +55,6 @@ def analyze_file(file_path, age_threshold=None, lines=[]):
     return dict(analysis), old_lines
 
 '''
-This is the main "I'm doing what I should" method. More on this in a future README.md update.
-'''
-@app.route('/inc', methods=['POST'])
-def api_inc():
-    data = request.json
-
-    return jsonify({'result': data['num'] + 1})
-
-@app.route('/analyze', methods=['POST'])
-def api_analyze():
-    data = request.json
-    file_path = data['file_path']
-    age_threshold = data.get('age_threshold')
-    lines = data.get('lines', [])
-
-    analysis, old_lines = analyze_file(file_path, age_threshold, lines)
-    return jsonify({'analysis': analysis, 'old_lines': old_lines})
-
-'''
 CLI options for the code review co-pilot
 '''
 if __name__ == '__main__':
@@ -95,19 +65,11 @@ if __name__ == '__main__':
     parser.add_argument('--lines', type=int, nargs=2, help='Lines to analyze')
     args = parser.parse_args()
 
-    config = load_config()
-    
-    if args.api:
-        db = SQLiteStorage(config)
-        app.run(debug=True)
-    elif args.file:
-        analysis, old_lines = analyze_file(args.file, args.age)
-        print("Author Analysis:")
-        for author, data in analysis.items():
-            print(f"{author}: {data['lines']} lines, last modified {data['last_modified']}")
-        if old_lines:
-            print("\nOld Lines:")
-            for line in old_lines:
-                print(f"Line {line['line_number']}: {line['content']} (by {line['author']} on {line['date']})")
-    else:
-        print("Please provide a file to analyze or use --api to run as server")
+    analysis, old_lines = analyze_file(args.file, args.age)
+    print("Author Analysis:")
+    for author, data in analysis.items():
+        print(f"{author}: {data['lines']} lines, last modified {data['last_modified']}")
+    if old_lines:
+        print("\nOld Lines:")
+        for line in old_lines:
+            print(f"Line {line['line_number']}: {line['content']} (by {line['author']} on {line['date']})")

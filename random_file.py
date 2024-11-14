@@ -51,8 +51,9 @@ if __name__ == '__main__':
     file_type = args.type
 
     random_file = RandomFile(directory, file_type)
-    print(random_file)
+    
     try:
+        # result!
         print("Random file selected:", random_file.get_random_file())
     except ValueError as e:
         print(e)
