@@ -16,6 +16,13 @@ class HabitRepository:
             return habit
         else:
             raise ValueError(f'Habit with id {habit_id} does not exist')
+        
+
+    def add_habit(self, name):
+        habit = Habit(name=name)
+        self.session.add(habit)
+        self.session.commit()
+        return habit
 
     def get_habit(self, habit_id):
         return self.session.query(Habit).filter_by(id=habit_id).first()

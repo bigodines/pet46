@@ -20,20 +20,29 @@ def get_healthcheck():
     '''
     return 'API is up and running!'
 
+@app.route('/habit', methods=['POST'])
+def post_habit():
+    """
+    Create a new habit.
+    """
+    data = request.json
+    habit = habit_repo.add_habit(data['name'])
+    return jsonify({'habit_id': habit.id, 'name': habit.name, 'checkin_count': habit.checkin_count})
+
 @app.route('/checkin', methods=['POST'])
 def post_checkin():
-    '''
+    """
     Main "checkin" endpoint for habit tracking.
-    '''
+    """
     data = request.json
     habit = habit_repo.add_checkin(data['habit_id'])
     return jsonify({'habit_id': habit.id, 'checkin_count': habit.checkin_count})
 
 @app.route('/checkin', methods=['GET'])
 def get_checkin():
-    '''
+    """
     Debugging "checkin" endpoint for habit tracking.
-    '''
+    """
     habit_id = request.args.get('habits_id')
     habit = habit_repo.get_habit(habit_id)
     if habit is None:
