@@ -2,5 +2,5 @@
     "host": "127.0.0.1",
     "port": 8000,
     "db": "sqlite",
-    "db_path": "./main.db"
+    "db_path": "sqlite:///main.db"
 }
