@@ -49,9 +49,9 @@ def get_checkin():
         return jsonify({'error': f'Habit with id {habit_id} does not exist'})
     return jsonify({'habit_id': habit.id, 'checkin_count': habit.checkin_count})
 
-# Load configuration and initialize database
 config = load_config()
 db_session = init_db(config['db_path'])
+
 configure_mappers()  # Ensure all mappers are configured
 habit_repo = HabitRepository(db_session)
 
