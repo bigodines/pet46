@@ -15,9 +15,9 @@ def load_config():
 
 @app.route('/healthcheck')
 def get_healthcheck():
-    '''
+    """ 
     healthcheck route
-    '''
+    """
     return 'API is up and running!'
 
 @app.route('/habit', methods=['POST'])
@@ -48,6 +48,7 @@ def get_checkin():
     if habit is None:
         return jsonify({'error': f'Habit with id {habit_id} does not exist'})
     return jsonify({'habit_id': habit.id, 'checkin_count': habit.checkin_count})
+
 
 config = load_config()
 db_session = init_db(config['db_path'])

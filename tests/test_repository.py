@@ -8,8 +8,8 @@ from storage.repository import HabitRepository
 @pytest.fixture
 def test_session():
     """Creates a new database session for testing."""
-    engine = create_engine('sqlite:///:memory:')  # In-memory SQLite database
-    Base.metadata.create_all(engine)  # Create tables
+    engine = create_engine('sqlite:///:memory:')  
+    Base.metadata.create_all(engine) 
     Session = sessionmaker(bind=engine)
     session = Session()
     yield session  # Provide the session to tests
@@ -18,7 +18,6 @@ def test_session():
 
 @pytest.fixture
 def habit_repo(test_session):
-    """Provides a HabitRepository instance for testing."""
     return HabitRepository(test_session)
 
 def test_add_habit(habit_repo):
