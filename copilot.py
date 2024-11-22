@@ -4,7 +4,6 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 
 
-
 def get_git_blame(file_path, lines=[]):
     if len(lines) > 0:
         line_args = f'-L {lines[0]},{lines[1]}'
