@@ -1,9 +1,11 @@
 from .models import Habit, Checkin
 
+
 class HabitRepository:
-    '''
+    """
     Encapsulates database operations for the Habit and Checkin entities.
-    '''
+    """
+
     def __init__(self, session):
         self.session = session
 
@@ -15,8 +17,7 @@ class HabitRepository:
             self.session.commit()
             return habit
         else:
-            raise ValueError(f'Habit with id {habit_id} does not exist')
-        
+            raise ValueError(f"Habit with id {habit_id} does not exist")
 
     def add_habit(self, name):
         habit = Habit(name=name)
